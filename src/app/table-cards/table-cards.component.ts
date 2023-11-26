@@ -52,11 +52,7 @@ export class TableCardsComponent implements AfterViewInit {
 
     if (!this.rows) return;
 
-    const maxLength = this.selectLargestRow(this.rows);
-    this.rows = this.rows.map((row) =>
-      this.fillWithNull(row, maxLength - row.length)
-    );
-    const groups = this.createCellGroups(this.rows, maxLength);
+    const groups = this.createCellGroups(this.rows, this.rows[0].length);
 
     for (let i: number = 0; i < groups.length; i++) {
       this.setHeight(groups[i]);
@@ -97,21 +93,6 @@ export class TableCardsComponent implements AfterViewInit {
   }
 
   /**
-   * Selects the largest row from a jagged array
-   * @param {Array} arr input array
-   * @returns the length of the largest row
-   */
-  private selectLargestRow<T>(arr: T[][]): number {
-    let maxLength: number = arr[0].length;
-    for (let i: number = 1; i < arr.length; i++) {
-      if (maxLength < arr[i].length) {
-        maxLength = arr[i].length;
-      }
-    }
-    return maxLength;
-  }
-
-  /**
    * Selects the largest `offsetHeight` from a list of `HTMLElement`
    * @param {Array} arr input array
    * @returns the largest `offsetHeight` in pixels
@@ -127,19 +108,5 @@ export class TableCardsComponent implements AfterViewInit {
       }
     }
     return maxHeight;
-  }
-
-  /**
-   * Add `null` values to an array as many times as the `count` value specifies
-   * @param {Array} arr input array
-   * @param {number} count defines how many times does it need to push `null` into the `arr`
-   * @returns a new array
-   */
-  private fillWithNull<T>(arr: (T | null)[], count: number): (T | null)[] {
-    const localCopy = [...arr];
-    for (let i: number = 0; i < count; i++) {
-      localCopy.push(null);
-    }
-    return localCopy;
   }
 }
