@@ -49,13 +49,13 @@ describe('TableCardsComponent', () => {
     const maxHeight5 = component['selectLargestHeight'](elements5);
     removeTestNodes(fixture.debugElement.nativeElement, elements3);
     removeTestNodes(fixture.debugElement.nativeElement, elements5);
-    expect(maxHeight3).toBe(2 ** 3);
-    expect(maxHeight5).toBe(2 ** 5);
+    expect(maxHeight3).toBe(3);
+    expect(maxHeight5).toBe(5);
   });
 
   it('should set height to the largest height from an HTMLElement group', () => {
-    const isSameHeight = (power: number) => (element: HTMLElement) =>
-      element.style.height === `${2 ** power}px`;
+    const isSameHeight = (index: number) => (element: HTMLElement) =>
+      element.style.height === `${index}px`;
     const elements3 = createTestNodes(fixture.debugElement.nativeElement, 3);
     const elements5 = createTestNodes(fixture.debugElement.nativeElement, 5);
     component['setHeight'](elements3);
@@ -76,7 +76,7 @@ function createTestNodes(
   const elements = [];
   for (let i: number = 0; i < nodeCount; i++) {
     const node = document.createElement('div');
-    node.style.height = `${2 ** (i + 1)}px`;
+    node.style.height = `${i + 1}px`;
     parent.appendChild(node);
     elements.push(node);
   }

@@ -3,9 +3,8 @@ import {
   Component,
   ElementRef,
   HostListener,
-  QueryList,
   Renderer2,
-  ViewChildren,
+  ViewChild,
 } from '@angular/core';
 
 @Component({
@@ -14,11 +13,9 @@ import {
   styleUrl: './table-cards.component.css',
 })
 export class TableCardsComponent implements AfterViewInit {
-  @ViewChildren('row') tableRows:
-    | QueryList<ElementRef<HTMLTableRowElement>>
-    | undefined;
+  @ViewChild('table') table: ElementRef<HTMLDivElement> | undefined;
 
-  private rows: (HTMLTableCellElement | null)[][] | undefined;
+  private rows: HTMLTableCellElement[][] | undefined;
 
   constructor(private renderer: Renderer2) {}
 
@@ -46,14 +43,14 @@ export class TableCardsComponent implements AfterViewInit {
    * Equalizes cell heights across table rows
    */
   private equalizeCellHeights(): void {
-    this.rows = this.tableRows
-      ?.toArray()
-      .map((row) => Array.from(row.nativeElement.querySelectorAll('td')));
+    const nativeRows = Array.from(
+      this.table?.nativeElement.querySelectorAll('.table-container tr') || []
+    );
+    this.rows = nativeRows.map((row) => Array.from(row.querySelectorAll('td')));
 
     if (!this.rows) return;
 
     const cellMatrix = this.transposeMatrix(this.rows);
-
     for (let i: number = 0; i < cellMatrix.length; i++) {
       this.setHeight(cellMatrix[i]);
     }
@@ -79,7 +76,7 @@ export class TableCardsComponent implements AfterViewInit {
    * Sets the `height` CSS property on each element in the `group` using the `renderer` object
    * @param {Array} group input array
    */
-  private setHeight<T extends HTMLElement>(group: (T | null)[]): void {
+  private setHeight<T extends HTMLElement>(group: T[]): void {
     const maxHeight = this.selectLargestHeight(group);
     for (let i: number = 0; i < group.length; i++) {
       const current = group[i];
@@ -93,9 +90,7 @@ export class TableCardsComponent implements AfterViewInit {
    * @param {Array} arr input array
    * @returns the largest `offsetHeight` in pixels
    */
-  private selectLargestHeight<T extends HTMLElement>(
-    arr: (T | null)[]
-  ): number {
+  private selectLargestHeight<T extends HTMLElement>(arr: T[]): number {
     let maxHeight: number = arr[0]?.offsetHeight ?? 0;
     for (let i: number = 1; i < arr.length; i++) {
       let current = arr[i];
