@@ -4,22 +4,35 @@ import {
   ElementRef,
   HostListener,
   Input,
+  OnInit,
   Renderer2,
   ViewChild,
+  ViewEncapsulation,
 } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-table-cards',
   templateUrl: './table-cards.component.html',
   styleUrl: './table-cards.component.css',
+  encapsulation: ViewEncapsulation.None,
 })
-export class TableCardsComponent implements AfterViewInit {
+export class TableCardsComponent implements OnInit, AfterViewInit {
   @Input() tablestring: string = '';
   @ViewChild('table') table: ElementRef<HTMLDivElement> | undefined;
 
   private rows: HTMLTableCellElement[][] | undefined;
 
-  constructor(private renderer: Renderer2) {}
+  constructor(
+    private renderer: Renderer2,
+    private domSanitizer: DomSanitizer
+  ) {}
+
+  ngOnInit(): void {
+    this.tablestring = this.domSanitizer.bypassSecurityTrustHtml(
+      this.tablestring
+    ) as string;
+  }
 
   ngAfterViewInit(): void {
     this.equalizeCellHeights();
