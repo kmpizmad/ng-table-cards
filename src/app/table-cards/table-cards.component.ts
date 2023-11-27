@@ -52,38 +52,34 @@ export class TableCardsComponent implements AfterViewInit {
 
     if (!this.rows) return;
 
-    const groups = this.createCellGroups(this.rows, this.rows[0].length);
+    const cellMatrix = this.transposeMatrix(this.rows);
 
-    for (let i: number = 0; i < groups.length; i++) {
-      this.setHeight(groups[i]);
+    for (let i: number = 0; i < cellMatrix.length; i++) {
+      this.setHeight(cellMatrix[i]);
     }
   }
 
   /**
-   * Groups the neighbouring cells into a new row and adding them to the output object
-   * @param {Array} data input jagged array
-   * @param {number} columns number of columns
-   * @returns a new jagged array
+   * Transposing a matrix
+   * @param {Array} matrix input matrix
+   * @returns a rotated matrix
    */
-  private createCellGroups(
-    data: (HTMLTableCellElement | null)[][],
-    columns: number
-  ): (HTMLTableCellElement | null)[][] {
-    const groups: (HTMLTableCellElement | null)[][] = [];
-    for (let i: number = 0; i < columns; i++) {
-      groups[i] = [];
-      for (let j: number = 0; j < data.length; j++) {
-        groups[i][j] = data[j][i];
+  private transposeMatrix<T>(matrix: T[][]): T[][] {
+    const transposedMatrix: T[][] = [];
+    for (let i: number = 0; i < matrix[0].length; i++) {
+      transposedMatrix[i] = [];
+      for (let j: number = 0; j < matrix.length; j++) {
+        transposedMatrix[i][j] = matrix[j][i];
       }
     }
-    return groups;
+    return transposedMatrix;
   }
 
   /**
    * Sets the `height` CSS property on each element in the `group` using the `renderer` object
    * @param {Array} group input array
    */
-  private setHeight(group: (HTMLTableCellElement | null)[]): void {
+  private setHeight<T extends HTMLElement>(group: (T | null)[]): void {
     const maxHeight = this.selectLargestHeight(group);
     for (let i: number = 0; i < group.length; i++) {
       const current = group[i];
