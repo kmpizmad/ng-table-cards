@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   HostListener,
+  Input,
   Renderer2,
   ViewChild,
 } from '@angular/core';
@@ -13,6 +14,7 @@ import {
   styleUrl: './table-cards.component.css',
 })
 export class TableCardsComponent implements AfterViewInit {
+  @Input() tablestring: string = '';
   @ViewChild('table') table: ElementRef<HTMLDivElement> | undefined;
 
   private rows: HTMLTableCellElement[][] | undefined;
