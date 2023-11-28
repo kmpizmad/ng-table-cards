@@ -30,7 +30,7 @@ describe('TableCardsComponent', () => {
   });
 
   it('should transpose the cell group matrix', () => {
-    const matrix = component['transposeMatrix']([
+    const matrix = component['transposeTable']([
       [1, 2, 3],
       [4, 5, 6],
       [7, 8, 9],

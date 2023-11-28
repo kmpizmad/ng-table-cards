@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   HostListener,
@@ -8,6 +9,7 @@ import {
   Renderer2,
   ViewChild,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -16,22 +18,21 @@ import { DomSanitizer } from '@angular/platform-browser';
   templateUrl: './table-cards.component.html',
   styleUrl: './table-cards.component.css',
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TableCardsComponent implements OnInit, AfterViewInit {
-  @Input() tablestring: string = '';
-  @ViewChild('table') table: ElementRef<HTMLDivElement> | undefined;
+  @Input() tableData!: string;
+  @Input() headline!: string;
 
-  private rows: HTMLTableCellElement[][] | undefined;
+  @ViewChild('table') table!: ElementRef<HTMLDivElement>;
 
-  constructor(
-    private renderer: Renderer2,
-    private domSanitizer: DomSanitizer
-  ) {}
+  private rows!: HTMLTableCellElement[][];
+
+  private readonly domSanitizer = inject(DomSanitizer);
+  private readonly renderer = inject(Renderer2);
 
   ngOnInit(): void {
-    this.tablestring = this.domSanitizer.bypassSecurityTrustHtml(
-      this.tablestring
-    ) as string;
+    this.tableData = this.applyMobileAttributes( this.tableData );
   }
 
   ngAfterViewInit(): void {
@@ -54,18 +55,41 @@ export class TableCardsComponent implements OnInit, AfterViewInit {
     }
   }
 
+  private applyMobileAttributes(dom: string): string {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(dom, 'text/html');
+    const tableElement = doc.body.querySelector('table');
+
+    if (tableElement) {
+      const rows = tableElement.rows;
+      for (let i = 0; i < rows.length; i++) {
+        const firstCell = rows[i].cells[0];
+        if (firstCell) {
+          const attributeValue = firstCell.textContent || firstCell.innerText;
+          for (let j = 1; j < rows[i].cells.length; j++) {
+            rows[i].cells[j].setAttribute('data-label', attributeValue);
+          }
+        }
+      }
+    }
+
+    return this.domSanitizer.bypassSecurityTrustHtml(
+      tableElement ? tableElement.outerHTML : ''
+    ) as string;
+  }
+
   /**
    * Equalizes cell heights across table rows
    */
   private equalizeCellHeights(): void {
     const nativeRows = Array.from(
-      this.table?.nativeElement.querySelectorAll('.table-container tr') || []
+      this.table?.nativeElement.querySelectorAll('tr') || []
     );
     this.rows = nativeRows.map((row) => Array.from(row.querySelectorAll('td')));
 
     if (!this.rows) return;
 
-    const cellMatrix = this.transposeMatrix(this.rows);
+    const cellMatrix = this.transposeTable(this.rows);
     for (let i: number = 0; i < cellMatrix.length; i++) {
       this.setHeight(cellMatrix[i]);
     }
@@ -76,15 +100,15 @@ export class TableCardsComponent implements OnInit, AfterViewInit {
    * @param {Array} matrix input matrix
    * @returns a rotated matrix
    */
-  private transposeMatrix<T>(matrix: T[][]): T[][] {
-    const transposedMatrix: T[][] = [];
+  private transposeTable<T>(matrix: T[][]): T[][] {
+    const transposed: T[][] = [];
     for (let i: number = 0; i < matrix[0].length; i++) {
-      transposedMatrix[i] = [];
+      transposed[i] = [];
       for (let j: number = 0; j < matrix.length; j++) {
-        transposedMatrix[i][j] = matrix[j][i];
+        transposed[i][j] = matrix[j][i];
       }
     }
-    return transposedMatrix;
+    return transposed;
   }
 
   /**
