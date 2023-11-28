@@ -17,7 +17,7 @@
   }
 
   .table-container tbody {
-    box-shadow: 0 0 6px 2px #dad9d6;
+    box-shadow: 0 0 6px 4px whitesmoke;
   }
 
   .table-container tr {
@@ -27,6 +27,14 @@
   .table-container tr:first-child {
     font-weight: 600;
     color: #545155;
+  }
+
+  .table-container tr:first-child td {
+    border-top: 1px solid #dad9d6;
+  }
+
+  .table-container tr:last-child td {
+    border-bottom: 1px solid #dad9d6;
   }
 
   .table-container td {
