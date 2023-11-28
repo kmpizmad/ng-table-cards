@@ -1,20 +1,20 @@
 @media (max-width: 1024px) {
-  .table-container {
+  :host {
     width: 100%;
     padding: 0.5rem;
     overflow-x: auto;
   }
 
-  .table-container table {
+  table {
     font-family: Arial, Helvetica, sans-serif;
   }
 
-  .table-container tbody {
+  tbody {
     display: flex;
     gap: 0.5rem;
   }
 
-  .table-container tr {
+  tr {
     display: flex;
     flex-direction: column;
     width: 300px;
@@ -22,42 +22,38 @@
     box-shadow: 0 0 6px 2px #dad9d6;
   }
 
-  .table-container tr td {
+  tr td {
     max-width: 300px;
     border-bottom: 1px solid #dad9d6;
     overflow-wrap: break-word;
-  }
-
-  .table-container tr td:last-child {
-    border-bottom: none;
-  }
-
-  .table-container td:first-child {
     padding: 1rem 0;
   }
 
-  .table-container td:first-child {
+  tr td:last-child {
+    border-bottom: none;
+  }
+
+  td:first-child {
     font-weight: 600;
     color: #545155;
   }
 
-  .table-container td:not(:first-child) {
+  td:not(:first-child) {
     display: flex;
     flex-direction: column;
     gap: 0.375rem;
-    padding: 0.75rem 0;
   }
 
-  .table-container td:not(:first-child)::before {
+  td:not(:first-child)::before {
     content: attr(data-label);
     color: #789ce4;
   }
 
-  .table-container tr:nth-child(odd) td:not(:first-child) {
+  tr:nth-child(odd) td:not(:first-child) {
     color: #8a2126;
   }
 
-  .table-container tr:nth-child(even) td:not(:first-child) {
+  tr:nth-child(even) td:not(:first-child) {
     color: #f6c86f;
   }
 }
