@@ -22,4 +22,42 @@ describe('TableCardsComponent', () => {
   it('should create component', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should add data-label to cells', () => {
+    const testHtmlString = `
+    <table>
+      <tbody>
+        <tr>
+            <td>Definitions</td>
+            <td>Column 1</td>
+            <td>Column 2</td>
+            <td>Column 3</td>
+        </tr>
+        <tr>
+            <td>Definition 1</td>
+            <td>Row 1</td>
+            <td>Row 1</td>
+            <td>Row 1</td>
+        </tr>
+        <tr>
+            <td>Definition 2</td>
+            <td>Row 2</td>
+            <td>Row 2</td>
+            <td>Row 2</td>
+        </tr>
+        <tr>
+            <td>Definition 3</td>
+            <td>Row 3</td>
+            <td>Row 3</td>
+            <td>Row 3</td>
+        </tr>
+      </tbody>
+    </table>
+  `;
+
+    const result = component['applyMobileAttributes'](testHtmlString);
+    expect(result.includes('data-label="Definition 1"')).toBeTruthy();
+    expect(result.includes('data-label="Definition 2"')).toBeTruthy();
+    expect(result.includes('data-label="Definition 3"')).toBeTruthy();
+  });
 });

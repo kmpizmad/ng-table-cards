@@ -5,6 +5,7 @@ import {
   Input,
   OnInit,
   Renderer2,
+  SecurityContext,
   ViewChild,
   ViewEncapsulation,
   inject,
@@ -48,8 +49,10 @@ export class TableCardsComponent implements OnInit {
       }
     }
 
-    return this.domSanitizer.bypassSecurityTrustHtml(
+    const safeHtml = this.domSanitizer.bypassSecurityTrustHtml(
       tableElement ? tableElement.outerHTML : ''
-    ) as string;
+    );
+
+    return this.domSanitizer.sanitize(SecurityContext.HTML, safeHtml) || '';
   }
 }
